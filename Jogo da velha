@@ -1,0 +1,131 @@
+using System;
+
+namespace JogoDaVelha
+{
+    class Program
+    {
+        class JogoDaVelha
+        {
+            private bool FimdeJogo;
+            private char[] lugares;
+            private char vez;
+            private int quantidadePreenchida;
+
+            public JogoDaVelha() // construtor
+            {
+                FimdeJogo = false; // indicativo do fim de jogo
+                lugares = new[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' }; // indicativo de lugares
+                vez = 'X'; // iniciar o Jogo sempre com o X
+                quantidadePreenchida = 0;
+            }
+
+            public void Iniciar() // Método void pois não tem retorno
+            {
+                while (!FimdeJogo)
+                {
+                    // Chamando método
+                    RenderizarTabela();
+                    LerEscolha();
+                }
+            }
+
+            private void TrocarVez()
+            {
+                vez = vez == 'X' ? 'O' : 'X'; // operador ternário: se a vez for 'X' torna-se 'O' e vice-versa
+            }
+
+            private void VerificarFimDeJogo()
+            {
+                if (quantidadePreenchida < 5)
+                    return;
+
+                if (VitoriaDiagonal() || VitoriaHorizontal() || VitoriaVertical())
+                {
+                    FimdeJogo = true;
+                    Console.WriteLine($"Acabou! Vitória de {vez}");
+                    return;
+                }
+
+                if (quantidadePreenchida == 9) // Se a quantidade for 9, é um empate
+                {
+                    FimdeJogo = true;
+                    Console.WriteLine("Empate!");
+                    return;
+                }
+            }
+
+            private bool VitoriaHorizontal()
+            {
+                // Verificar a vitória nas linhas horizontais
+                return (lugares[1] == lugares[2] && lugares[1] == lugares[3]) ||
+                       (lugares[4] == lugares[5] && lugares[4] == lugares[6]) ||
+                       (lugares[7] == lugares[8] && lugares[7] == lugares[9]);
+            }
+
+            private bool VitoriaDiagonal()
+            {
+                // Verificar a vitória nas diagonais
+                return (lugares[1] == lugares[5] && lugares[1] == lugares[9]) ||
+                       (lugares[3] == lugares[5] && lugares[3] == lugares[7]);
+            }
+
+            private bool VitoriaVertical()
+            {
+                // Verificar a vitória nas linhas verticais
+                return (lugares[1] == lugares[4] && lugares[1] == lugares[7]) ||
+                       (lugares[2] == lugares[5] && lugares[2] == lugares[8]) ||
+                       (lugares[3] == lugares[6] && lugares[3] == lugares[9]);
+            }
+
+            private void LerEscolha()
+            {
+                Console.WriteLine($"Agora é a sua vez, {vez}");
+                // Validar o input do usuário
+                int posicaoEscolhida = int.Parse(Console.ReadLine());
+                if (posicaoEscolhida < 1 || posicaoEscolhida > 9)
+                {
+                    Console.WriteLine("Posição inválida, digite novamente.");
+                    LerEscolha();
+                    return;
+                }
+
+                if (!ValidarEscolha(posicaoEscolhida))
+                {
+                    Console.WriteLine("Posição ocupada, escolha outra.");
+                    LerEscolha();
+                    return;
+                }
+
+                lugares[posicaoEscolhida] = vez;
+                quantidadePreenchida++;
+                // Mostra a tabela
+                Console.Clear();
+                RenderizarTabela();
+                VerificarFimDeJogo();
+                TrocarVez();
+            }
+
+            private bool ValidarEscolha(int posicaoEscolhida)
+            {
+                return lugares[posicaoEscolhida] != 'X' && lugares[posicaoEscolhida] != 'O';
+            }
+
+            private void RenderizarTabela()
+            {
+                Console.WriteLine("---|---|---");
+                Console.WriteLine($" {lugares[1]} | {lugares[2]} | {lugares[3]} ");
+                Console.WriteLine("---|---|---");
+                Console.WriteLine($" {lugares[4]} | {lugares[5]} | {lugares[6]} ");
+                Console.WriteLine("---|---|---");
+                Console.WriteLine($" {lugares[7]} | {lugares[8]} | {lugares[9]} ");
+                Console.WriteLine("---|---|---");
+            }
+        }
+
+        static void Main(string[] args)
+        {
+            JogoDaVelha jogo = new JogoDaVelha();
+            jogo.Iniciar();
+        }
+    }
+}
