@@ -99,10 +99,10 @@ namespace JogoDaVelha
                 lugares[posicaoEscolhida] = vez;
                 quantidadePreenchida++;
                 // Mostra a tabela
-                Console.Clear();
                 RenderizarTabela();
                 VerificarFimDeJogo();
                 TrocarVez();
+                Console.Clear();
             }
 
             private bool ValidarEscolha(int posicaoEscolhida)
